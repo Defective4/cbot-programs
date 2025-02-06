@@ -1,0 +1,49 @@
+extern public void object::AutoShooter()
+{
+	int cat = AlienAnt;
+	int maxAlt = 5;
+	float maxTemp = 0.5;
+	float speed = 1;
+	float dist = 25;
+	float minDist = 5;
+	
+	while(true) {
+		object obj = radar(cat, 0, 40);
+		if(obj==null) obj = radar(cat);
+		if(obj==null) {
+			motor(0, 0);
+			continue;
+		}
+		float dir = direction(obj.position);
+		if(abs(dir) > 40) turn(dir);
+		
+		float alt = altitude;
+		float top = topo(position);
+		if(top < 0) {
+			alt += top;
+		}
+		float thrust = maxAlt - alt;
+		thrust *= 0.1;
+		if(temperature > maxTemp && top > 1) { 
+			while(temperature > 0) {
+				motor(0, 0);
+				jet(-1);
+			}
+		}
+		else {
+			while(altitude < maxAlt) jet(1);
+		}
+		jet(thrust);
+		AutoAim(obj.position, false);
+		
+		dir *= 0.01;
+		
+		motor(-dir + speed, dir + speed);
+		float cd = distance2d(position, obj.position);
+		while(abs(direction(obj.position)) < 40 && cd < dist && (altitude < maxAlt || cd > minDist) && !obj.dead) {
+			fire(0.1);
+			motor(1,1);
+		}
+		AutoCharge(0.5);
+	}
+}

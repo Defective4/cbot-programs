@@ -1,0 +1,16 @@
+extern public void object::AutoCharge(float level)
+{
+	object cell = energyCell;
+	errmode(0);
+	if(cell.energyLevel < level) {
+		object station = radar(PowerStation);
+		if(station != null) {
+			while(goto(station.position) != 0) wait(1);
+			while(cell.energyLevel < 1) {
+				wait(0.1);
+			}
+		}
+	}
+	errmode(1);
+}
+

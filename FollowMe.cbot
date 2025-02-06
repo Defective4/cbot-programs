@@ -1,0 +1,27 @@
+extern void object::Follow()
+{
+	object obj = radar(Me);
+	float speed = 1;
+	float slowDist = 20;
+	float stopDist = 5;
+	
+	while(true) {
+		float dir = direction(obj.position);
+		if(dir > 40) turn(dir);
+		dir *= 0.01;
+		
+		float thrust = obj.position.z - position.z;
+		thrust *= 0.1;
+		if(obj.altitude == 0) thrust = -1;
+		jet(thrust);
+		
+		float realSpeed = speed;
+		float dist = distance(position, obj.position);
+		realSpeed *= dist / slowDist;
+		if(realSpeed > speed) realSpeed = speed;
+		
+		if(dist < stopDist) realSpeed = 0;
+		
+		motor(-dir + realSpeed, dir + realSpeed);
+	}
+}

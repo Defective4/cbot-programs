@@ -1,0 +1,45 @@
+extern void object::RemoteControler() {
+	
+	point origin = position;
+	
+	RC rc();
+	while(true) {
+		wait(0.5);
+		if(distance(position, origin) > 1)  goto(origin);
+		
+		if(!rc.has()) continue;
+		point target = rc.getTarget();
+		int pd = rc.getPayload();
+		rc.remove();
+		while(goto(target) != 0) wait(0.1);
+		move(-3);
+		build(pd);
+		AutoCharge(0.5);
+	}
+}
+
+public class RC {
+	private static point target;
+	private static int payload = -1;
+	
+	synchronized void order(point target, int payload) {
+		this.target = target;
+		this.payload = payload;
+	}
+	
+	synchronized bool has() {
+		return payload != -1;
+	}
+	
+	synchronized void remove() {
+		this.payload = -1;
+	}
+	
+	synchronized point getTarget() {
+		return this.target;
+	}
+	
+	synchronized int getPayload() {
+		return this.payload;
+	}
+}

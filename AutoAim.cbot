@@ -1,0 +1,6 @@
+public void object::AutoAim(point pos, boolean ph) {
+	
+	float w = -direction(pos);
+	float h = atan2(pos.z-position.z-(ph ? pitch*0.25 : 0), distance2d(position, pos));
+	aim(h,w);
+}
